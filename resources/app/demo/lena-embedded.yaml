@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lena-embedded
+  namespace: "default"
+spec:
+  selector:
+    matchLabels:
+      type: lena-embedded
+      app: test
+  replicas: 1 
+  strategy:
+    type: Recreate
+  minReadySeconds: 10
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        type: lena-embedded
+        app: test
+    spec:      
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - lnpwsap2
+      containers:
+      - name: lena-embedded
+        #image: docker.io/lena-embed:0.2
+        #image: docker.io/sejong:v1
+        image: docker.io/gguldugy/lena-em:v1
+        #imagePullPolicy: Never
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          # livenessProbe:
+          # httpGet:
+          #  path: /
+          #  port: 8080
+          #initialDelaySeconds: 30
+          #periodSeconds: 10        
+        envFrom:
+        - configMapRef:
+            name: configmap-lena-embedded
+      terminationGracePeriodSeconds: 0
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-lena-embedded
+  namespace: "default"
+data:
+  #LENA_MANAGER_ADDRESS: lena-manager.default.svc.cluster.local
+  LENA_MANAGER_ADDRESS: 10.81.208.155
+  LENA_SERVICE_CLUSTER_NAME: lena-embedded
+  APPLICATION_NAME: devon-demo
+  JVM_HEAP_SIZE: "256"
+  JVM_METASPACE_SIZE: "128"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lena-embedded
+  namespace: "default"
+spec:
+  selector:
+    type: lena-embedded
+    app: test
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: NodePort
+  externalIPs:
+  - 10.81.208.156
+

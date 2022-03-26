@@ -25,7 +25,8 @@ spec:
                 - lnpwsap1  
       containers:
       - name: lena-manager
-        image: docker.io/lenacloud/lena-manager:1.3.1cn.2-centos7-jdk8-openjdk
+        #image: docker.io/lenacloud/lena-manager:1.3.1cn.2-centos7-jdk8-openjdk
+        image: docker.io/lenacloud/lena-manager:1.3.1n.3-centos7-jdk8-openjdk
         imagePullPolicy: Always
         ports:
         - containerPort: 7700
