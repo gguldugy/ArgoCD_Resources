@@ -36,7 +36,7 @@ spec:
         volumeMounts:
         - name: wsy-lena-manager-repository
           mountPath: /usr/local/lena/repository
-#        readinessProbe:
+#       readinessProbe:
 #          httpGet:
 #            path: /lena
 #            port: 7700
