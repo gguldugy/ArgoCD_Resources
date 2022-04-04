@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       type: lena-web
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
   minReadySeconds: 1
